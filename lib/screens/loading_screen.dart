@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather7/location.dart';
+import 'package:weather7/screens/location_screen.dart';
 import 'package:weather7/services/networking.dart';
 
-
 const apiKey = 'c125b2a43f80c370dd227ea81fd86628';
-
-
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -24,29 +23,27 @@ class _LoadingScreenState extends State<LoadingScreen> {
     getCurrentLocation();
   }
 
-  void getData() async{
-     }
-
-
   void getCurrentLocation() async{
     Location location = Location();
     await location.getLocation();
     latitude = location.latitude;
     longitude = location.longitude;
 
-    print(latitude);
-
     NetworkHelper networkHelper = NetworkHelper('https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&exclude=hourly,daily&appid=$apiKey');
 
     var weatherData = await networkHelper.getData();
 
-
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return LocationScreen(locationWeather: weatherData);
+      }
+    ),);
 //
 //    String cityName = decodedData['timezone'];
 //    double lat = decodedData['lat'];
 //    double lon = decodedData['lon'];
 //    int humidity = decodedData['current']['humidity'];
-//    double temp = decodedData['current']['temp'];
+//
 //    String desc = decodedData['current']['weather'][0]['description'];
 
 
@@ -67,15 +64,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
       constraints: BoxConstraints.expand(),
         child: SafeArea(
           child: Center(
-            child: RaisedButton(
-              onPressed: () {
-
-                   //Get the current location
-              },
-              child: Text('Get Location',
-              style: TextStyle(
-                fontSize: 30.0,
-              ),),
+            child: SpinKitFoldingCube(
+              size: 50.0,
+              color: Colors.red,
             ),
           ),
         ),
