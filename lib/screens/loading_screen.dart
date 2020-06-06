@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
+import 'package:weather7/location.dart';
+import 'package:weather7/services/networking.dart';
+
+
+const apiKey = 'c125b2a43f80c370dd227ea81fd86628';
+
+
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,10 +14,42 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
 
-  void getLocation() async{
+  double latitude;
+  double longitude;
 
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentLocation();
+  }
+
+  void getData() async{
+     }
+
+
+  void getCurrentLocation() async{
+    Location location = Location();
+    await location.getLocation();
+    latitude = location.latitude;
+    longitude = location.longitude;
+
+    print(latitude);
+
+    NetworkHelper networkHelper = NetworkHelper('https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&exclude=hourly,daily&appid=$apiKey');
+
+    var weatherData = await networkHelper.getData();
+
+
+//
+//    String cityName = decodedData['timezone'];
+//    double lat = decodedData['lat'];
+//    double lon = decodedData['lon'];
+//    int humidity = decodedData['current']['humidity'];
+//    double temp = decodedData['current']['temp'];
+//    String desc = decodedData['current']['weather'][0]['description'];
+
+
   }
 
   @override
@@ -32,8 +69,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
           child: Center(
             child: RaisedButton(
               onPressed: () {
-                getLocation();
-                //Get the current location
+
+                   //Get the current location
               },
               child: Text('Get Location',
               style: TextStyle(
